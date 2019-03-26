@@ -1,0 +1,141 @@
+sap.ui.define([
+	"sap/ui/core/mvc/Controller",
+	"sap/ui/model/json/JSONModel",
+	"sap/viz/ui5/format/ChartFormatter",
+	"sap/viz/ui5/api/env/Format"
+], function (Controller, JSONModel, ChartFormatter, Format) {
+	"use strict";
+
+	return Controller.extend("jorgcalleja.dice.statistics.Dice_Statistics_sample.controller.Main", {
+		onInit : function() {
+
+// if SAPUI5 < 1.32.11 ...
+//SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function(elem) { return elem.getScreenCTM().inverse().multiply(this.getScreenCTM()); }; 		
+
+			var oData = { "Dice" : [
+				{ "value" : "2", "prob"  : "2.7", "probAc" : "100" },
+				{ "value" : "3", "prob"  : "5.5", "probAc" : "97.2" },
+				{ "value" : "4", "prob"  : "8.3", "probAc" : "91.7" },
+				{ "value" : "5", "prob"  : "11.1", "probAc" : "83.3" },
+				{ "value" : "6", "prob"  : "13.9", "probAc" : "72.2" },
+				{ "value" : "7", "prob"  : "16.7", "probAc" : "58.3" },
+				{ "value" : "8", "prob"  : "13.9", "probAc" : "41.7" },
+				{ "value" : "9", "prob"  : "11.1", "probAc" : "27.8" },
+				{ "value" : "10", "prob"  : "8.3", "probAc" : "16.7" },
+				{ "value" : "11", "prob"  : "5.5", "probAc" : "8.3" },
+				{ "value" : "12", "prob"  : "2.7", "probAc" : "2.7" }
+			] };
+			this.getView().setModel(new JSONModel(oData));
+
+			this.oVizFrame = this.byId("idVizFrame");
+			this.oVizFrame.setVizProperties( { 
+				                        "title"       : { "text" : "2d6"} ,
+    									"interaction" : { "behaviorType" : null,
+    													  "selectability" : { "mode" : "INCLUSIVE" }
+    									},
+										"tooltip"     : { "visible" : "true",
+														  "background" : { "color" : "#00FF00"}
+										}
+			});
+			/*
+			this.oVizFrame.setVizProperties( { 
+				                        "title"       : { "text" : "2d6"} ,
+    									"interaction" : { "behaviorType" : null,
+    													  "selectability" : { "mode" : "EXCLUSIVE" },
+    													  "decorations" : [{
+    													  	"name" : "showDetail1",
+    													  	"fn" : this.showTooltip
+    													  },
+    													  {
+    													  	"name" : "hideDetail1",
+    													  	"fn" : this.hideTooltip
+    													  }]
+    									}
+			});
+*/
+            Format.numericFormatter(ChartFormatter.getInstance());
+            var formatPattern = ChartFormatter.DefaultPattern;
+            
+            this.oPopOver = this.getView().byId("idPopOver");
+
+            this.oPopOver.setFormatString(formatPattern.STANDARDFLOAT);
+            this.oPopOver.setCustomDataControl( function (data) {
+            	debugger;
+            	var values = data.data.val, divStr = "", idx = values[1].value;
+                var svg = "<svg width='10px' height='10px'><path d='M-5,-5L5,-5L5,5L-5,5Z' fill='#5cbae6' transform='translate(5,5)'></path></svg>";
+                divStr = divStr + "<div style = 'margin: 15px 30px 0 10px'>"+ svg + "<b style='margin-left:10px'>" + values[0].value + "</b></div>";
+                divStr = divStr + "<div style = 'margin: 5px 30px 0 30px'>" + values[2].name + "<span style = 'float: right'>" + values[2].value + "</span></div>";
+                return new sap.ui.core.HTML({content:divStr});
+            });
+            this.oPopOver.setActionItems([{
+                type: 'action',
+                text: 'Action',
+                press: function() {
+                            alert('This is a callback function from "Action Button" Action.');
+                        }
+            }]);
+
+            this.oPopOver.connect(this.oVizFrame.getVizUid());
+		},
+		
+		showTooltip : function(evt)  {
+			var oTooltip = new sap.viz.ui5.controls.VizTooltip({});
+            oTooltip.connect(this.oVizFrame.getVizUid());
+            //oTooltip.setFormatString(formatPattern.STANDARDFLOAT);
+		},
+		
+		hideTooltip : function(evt) {
+			
+		}
+	});
+});
+
+/*
+			this.vizframe = oVizFrame;
+			oVizFrame.attachSelectData( function(x) {
+				window.alert("hola");
+				debugger;
+			}, this );
+*/
+				
+	
+			//var oVizFrame = this.byId("idVizFrame");
+			//oVizFrame.setVizProperties( { "title" : { "text" : "2d6"} });
+
+		/*	var oVizFrame = this.byId("idVizFrame");
+			oVizFrame.setVizProperties( { "title" : { "text" : "2d6"} ,
+    									"interaction" : { "behaviorType" : null,
+    													  "selectability" : { "mode" : "EXCLUSIVE" }},
+										"tooltip" : { "visible" : true,
+										              "background" : { "color" : "#00FF00"}
+										}*/
+
+/*
+
+		onInit : function() {
+			var oData = { 
+				"1d6" : { "Dice" : [
+				{ "value" : "1", "prob"  : "16.7", "probAc" : "100" },
+				{ "value" : "2", "prob"  : "16.7", "probAc" : "83.3" },
+				{ "value" : "3", "prob"  : "16.7", "probAc" : "66.7" },
+				{ "value" : "4", "prob"  : "16.7", "probAc" : "50" },
+				{ "value" : "5", "prob"  : "16.7", "probAc" : "33.3" },
+				{ "value" : "6", "prob"  : "16.7", "probAc" : "16.7" } ] }
+				,
+				"2d6" : { "Dice" : [
+				{ "value" : "2", "prob"  : "2.7", "probAc" : "100" },
+				{ "value" : "3", "prob"  : "5.5", "probAc" : "97.2" },
+				{ "value" : "4", "prob"  : "8.3", "probAc" : "91.7" },
+				{ "value" : "5", "prob"  : "11.1", "probAc" : "83.3" },
+				{ "value" : "6", "prob"  : "13.9", "probAc" : "72.2" },
+				{ "value" : "7", "prob"  : "16.7", "probAc" : "58.3" },
+				{ "value" : "8", "prob"  : "13.9", "probAc" : "41.7" },
+				{ "value" : "9", "prob"  : "11.1", "probAc" : "27.8" },
+				{ "value" : "10", "prob"  : "8.3", "probAc" : "16.7" },
+				{ "value" : "11", "prob"  : "5.5", "probAc" : "8.3" },
+				{ "value" : "12", "prob"  : "2.7", "probAc" : "2.7" }
+			] } };
+			this.getView().setModel(new JSONModel(oData["2d6"]));
+		}
+		
+*/

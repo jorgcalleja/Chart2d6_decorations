@@ -1,0 +1,41 @@
+<mvc:View controllerName="jorgcalleja.dice.statistics.Dice_Statistics_sample.controller.Main"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc"
+	xmlns:viz="sap.viz.ui5.controls"  xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+	xmlns:viz.data="sap.viz.ui5.data"
+	displayBlock="true" >
+	<App id="idAppControl">
+		<pages>
+			<Page title="{i18n>title}">
+				<content>
+	            <Panel expandable="true" expanded="false" headerText="Total">
+	            	<content>
+	            		<List items="{selection>/Section}">
+	            			<InputListItem label="{selection>key}">
+	            				<Text text="{selection>value}" />
+	            			</InputListItem>
+	            		</List>
+	            	</content>
+	            </Panel>
+	            <viz:VizFrame id="idVizFrame" uiConfig="{applicationSet:'fiori'}" width="100%" vizType='line'>
+	                <viz:dataset>
+	                    <viz.data:FlattenedDataset data="{/Dice}">
+	                        <viz.data:dimensions>
+	                            <viz.data:DimensionDefinition name="Resultado" value="{value}" />
+	                        </viz.data:dimensions>
+	                        <viz.data:measures>
+	                            <viz.data:MeasureDefinition name="Probabilidad" value="{prob}" />
+	                        </viz.data:measures>
+	                    </viz.data:FlattenedDataset>
+	                </viz:dataset>
+	
+	                <viz:feeds>
+	                    <viz.feeds:FeedItem uid="valueAxis" type="Measure" values="Probabilidad" />
+	                    <viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Resultado" />
+	                </viz:feeds>
+	            </viz:VizFrame>
+				</content>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>
