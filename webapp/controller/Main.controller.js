@@ -71,9 +71,12 @@ sap.ui.define([
 		},
 		
 		hideTooltip : function(evt) {
-			// Borramos la selección actual
-			this.oInfo.setProperty("/Section/0/value", "");
-			this.oInfo.setProperty("/Section/1/value", "");
+			// Borramos la selección actual si no hay valores
+			var aDatos = this.oVizFrame.vizSelection();
+			if (!aDatos || aDatos.length === 0) {
+				this.oInfo.setProperty("/Section/0/value", "");
+				this.oInfo.setProperty("/Section/1/value", "");
+			}
 		}
 	});
 });
